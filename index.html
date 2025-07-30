@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://js.tosspayments.com/v2/standard"></script>
+    <style>
+      .w-100 {
+          width: 100%;
+      }
+
+      .btn-wrapper {
+          padding: 0 24px;
+      }
+
+      .btn {
+          padding: 11px 22px;
+          border: none;
+          border-radius:  8px;
+
+          background-color: #f2f4f6;
+          color: #4e5968;
+          font-weight: 600;
+          font-size: 17px;
+          cursor: pointer;
+      }
+
+      .btn.primary {
+          background-color: #3282f6;
+          color: #f9fcff;
+      }
+    </style>
+    <script>
+      window.onload = async function () {
+        const clientKey = 'test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm' // 테스트용 클라이언트 키
+    const customerKey = '_Ffm6-A77XZ_Q6gVb-ICh' // 내 상점에서 구매자를 구분하기 위해 발급한 고유 ID
+
+    // 2. 결제위젯 SDK 초기화
+    const tossPayments = TossPayments("test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm");
+    const widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+      widgets.setAmount({
+      currency: 'KRW',
+      value: 200,
+    });
+    const paymentMethodWidget = await widgets.renderPaymentMethods({
+  selector: "#payment-method",
+});
+const agreementWidget = await widgets.renderAgreement({
+  selector: "#agreement",
+});
+
+const paymentRequestButton = document.getElementById("payment-request-button");
+const generateRandomString = () => window.btoa(Math.random()).slice(0, 20);
+
+paymentRequestButton.addEventListener("click", async () => {
+  try { 
+     await  widgets.requestPayment({
+      orderId: generateRandomString(),
+      orderName: "토스 티셔츠 외 2건",
+      successUrl: 'https://skam12345.github.io/tossTestApproval',
+      failUrl: 'https://skam12345.github.io/tossTestApproval',
+      customerEmail: "customer123@gmail.com",
+      customerName: "김토스",
+    });
+  }catch(err) {
+
+  }
+  });
+}
+    </script>
+</head>
+<body>
+    <div id="payment-method" class="w-100"></div>
+        <div id="agreement" class="w-100"></div>
+        <div class="btn-wrapper w-100">
+          <button id="payment-request-button" class="btn primary w-100">결제하기</button>
+        </div>
+</body>
+</html>
